@@ -19,11 +19,14 @@ public class MyAdapter extends BaseAdapter {
 
     public static List<Movie> movies;
 
-    public MyAdapter(Context c, List<Movie> list) {
+    public static boolean mTwopane;
+
+    public MyAdapter(Context c, List<Movie> list,boolean Twopane) {
 
 
         movies = list;
         mContext = c;
+        mTwopane = Twopane;
     }
 
     public int getCount() {
@@ -44,12 +47,23 @@ public class MyAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(500,650));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            if(mTwopane)
+            {
+                imageView.setLayoutParams(new GridView.LayoutParams(350,450));
+
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            }
+            else {
+                imageView.setLayoutParams(new GridView.LayoutParams(500, 650));
+                imageView.setPadding(8, 8, 8, 8);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            }
+
         } else {
             imageView = (ImageView) convertView;
         }
+
 
         Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185/" + movies.get(position).getPoster()).into(imageView);
 

@@ -1,0 +1,9 @@
+<FrameLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detailfragment"
+    >
+
+</FrameLayout>
+<!-- From: file:/E:/androidstudioprojects/udacity/Popularmovies-ver2/app/src/main/res/layout/activity_description.xml -->

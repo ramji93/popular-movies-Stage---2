@@ -4,16 +4,19 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_description">Description</string>
     <array name="sorting_options">
-        <item>Sort by popularity</item>
-        <item>Sort by user rating</item>
+        <item>Most Popular</item>
+        <item>Highest Rated</item>
+        <item>Favourites</item>
     </array>
 
     <string name="popularity_value">popularity.desc</string>
     <string name="rating_value">vote_average.desc</string>
+    <string name="favourites">favourites</string>
 
     <array name="sorting_values">
         <item>@string/popularity_value</item>
         <item>@string/rating_value</item>
+        <item>@string/favourites</item>
     </array>
     <string name="title_activity_settings">Settings</string>
     <string name="sort_key">sorting_order</string>

@@ -13,6 +13,34 @@ public class DescriptionActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_description);
+
+        DescriptionActivityFragment descriptionActivityFragment = new DescriptionActivityFragment();
+
+        Bundle bundle = new Bundle();
+
+         Intent intent = getIntent();
+
+         if(intent.getData()!=null)
+         {
+             bundle.putParcelable("uri",intent.getData());
+
+         }
+
+        else
+         {
+             bundle.putString("rating",getIntent().getStringExtra("rating"));
+             bundle.putString("synopsis",getIntent().getStringExtra("synopsis"));
+             bundle.putString("title",getIntent().getStringExtra("title"));
+             bundle.putString("poster",getIntent().getStringExtra("poster"));
+             bundle.putString("date",getIntent().getStringExtra("date"));
+             bundle.putInt("id",getIntent().getIntExtra("id",0));
+
+         }
+
+        descriptionActivityFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.detailfragment,descriptionActivityFragment).commit();
+
     }
 
 

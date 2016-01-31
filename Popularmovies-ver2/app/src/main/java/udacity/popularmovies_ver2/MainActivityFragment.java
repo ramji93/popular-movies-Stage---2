@@ -1,6 +1,9 @@
 package udacity.popularmovies_ver2;
 
-import android.content.Intent;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +30,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import udacity.popularmovies_ver2.data.MoviesContract;
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -35,6 +41,15 @@ public class MainActivityFragment  extends Fragment  {
 
     GridView gridView;
 
+    public String sort_value;
+
+    public int mPosition=gridView.INVALID_POSITION;
+
+    public Bundle savedbundle;
+
+
+    public String detail_tag = "DESCRIPTION FRAGMENT TAG";
+
     public MainActivityFragment() {
     }
 
@@ -42,38 +57,98 @@ public class MainActivityFragment  extends Fragment  {
     public void onStart() {
         super.onStart();
 
-        String sort_value = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(getString(R.string.sort_key),getString(R.string.popularity_value));
 
-        Fetchmovieinfo fetchmovieinfo = new Fetchmovieinfo();
-        fetchmovieinfo.execute(sort_value);
+        sort_value = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(getString(R.string.sort_key),getString(R.string.popularity_value));
+
+       // sort_value = "favourites";
+
+
+        if(sort_value.equals(getString(R.string.favourites)))
+        {
+
+            Cursor c = getActivity().getContentResolver().query(MoviesContract.MovieEntry.CONTENT_URI,new String[]{MoviesContract.MovieEntry.COLUMN_ID, MoviesContract.MovieEntry.COLUMN_IMAGE},null,null,null);
+            MovieAdapter movieAdapter = new MovieAdapter(getActivity(),c,((MainActivity) getActivity()).mTwoPane);
+            gridView.setAdapter(movieAdapter);
+        }
+
+        else
+
+        {
+            ConnectivityManager cm =
+                    (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+             if(activeNetwork != null && activeNetwork.isConnectedOrConnecting())
+
+             {
+
+                 Fetchmovieinfo fetchmovieinfo = new Fetchmovieinfo();
+                 fetchmovieinfo.execute(sort_value);
+
+             }
+
+            else
+             {
+                 Toast.makeText(getActivity(),"select favourites in the settings for offline mode",Toast.LENGTH_LONG).show();
+
+             }
+
+        }
+
+
+        if(savedbundle!=null)
+        {
+            if(savedbundle.containsKey("position")&& savedbundle.containsKey("sortby")&& savedbundle.getString("sortby").equals(sort_value))
+            {
+//Code to handle savedinstance bundle
+
+            }
+        }
+
 
 
     }
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
          View RootView =  inflater.inflate(R.layout.fragment_main, container, false);
 
-        gridView =  (GridView)  RootView.findViewById(R.id.gridview);
+
+        savedbundle = savedInstanceState;
+
+        gridView =  (GridView) RootView.findViewById(R.id.gridview);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+               if(sort_value.equals(getString(R.string.favourites)))
+               {
 
-                Movie movieitem = (Movie)  gridView.getAdapter().getItem(position);
 
+                   Cursor c = (Cursor) gridView.getAdapter().getItem(position);
 
-                Intent intent = new Intent(getActivity(),DescriptionActivity.class);
+                   ((Callback)getActivity()).Onitemselected_favourites(MoviesContract.MovieEntry.appendmovieUriwithid(c.getInt(0)));
 
-                intent.putExtra("rating", movieitem.getRating());
-                intent.putExtra("synopsis",movieitem.getSynopsis());
-                intent.putExtra("title",movieitem.getTitle());
-                intent.putExtra("poster",movieitem.getPoster());
-                intent.putExtra("date",movieitem.getDate());
+                   c.close();
 
-                startActivity(intent);
+                   mPosition = position;
+
+               }
+
+               else
+
+               {
+                   Movie movieitem = (Movie) gridView.getAdapter().getItem(position);
+
+                   ((Callback)getActivity()).onitemselected_notfavourites(movieitem);
+
+                   mPosition = position;
+
+               }
             }
         });
 
@@ -81,6 +156,33 @@ public class MainActivityFragment  extends Fragment  {
 
         return RootView;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+
+        super.onSaveInstanceState(outState);
+
+        if(mPosition!=gridView.INVALID_POSITION)
+        {
+            outState.putInt("position",mPosition);
+            outState.putString("sortby",sort_value);
+        }
+
+    }
+
+    public interface Callback
+
+    {
+
+       public void Onitemselected_favourites(Uri uri);
+
+       public void onitemselected_notfavourites(Movie movie);
+
+
+
+    }
+
 
     public List<Movie> jsonformatter(String jsonstring) {
 
@@ -95,9 +197,13 @@ public class MainActivityFragment  extends Fragment  {
 
             for(int i=0;i<results.length();i++)
             {
+
+
                 JSONObject movieobject = results.getJSONObject(i);
 
                 Movie movie = new Movie();
+
+               movie.setId(movieobject.getInt("id"));
 
                 movie.setDate(movieobject.getString("release_date"));
 
@@ -108,6 +214,8 @@ public class MainActivityFragment  extends Fragment  {
                 movie.setRating(Double.toString(movieobject.getDouble("vote_average")));
 
                 movie.setTitle(movieobject.getString("title"));
+
+
 
                 movies.add(movie);
 
@@ -146,10 +254,9 @@ public class MainActivityFragment  extends Fragment  {
 
             try {
 
-
 //
                 Uri uri = Uri.parse("http://api.themoviedb.org/3/discover/movie").buildUpon()
-                        .appendQueryParameter("sort_by",params[0]).appendQueryParameter("api_key", "your_api_key").build();
+                        .appendQueryParameter("sort_by",params[0]).appendQueryParameter("api_key", "your api key").build();
 
 
                 URL url = new URL(uri.toString());
@@ -206,17 +313,14 @@ public class MainActivityFragment  extends Fragment  {
                 }
 
             }
-
             return jsonformatter(jsonstring);
-
-
         }
 
         @Override
         protected void onPostExecute(List<Movie> movies) {
             super.onPostExecute(movies);
 
-            MyAdapter myAdapter = new MyAdapter(getActivity(),movies);
+            MyAdapter myAdapter = new MyAdapter(getActivity(),movies,((MainActivity) getActivity()).mTwoPane);
 
             gridView.setAdapter(myAdapter);
 

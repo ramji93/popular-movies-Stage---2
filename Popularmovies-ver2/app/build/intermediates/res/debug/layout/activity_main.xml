@@ -1,0 +1,6 @@
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
+    android:name="udacity.popularmovies_ver2.MainActivityFragment"
+    tools:layout="@layout/fragment_main" android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+<!-- From: file:/E:/androidstudioprojects/udacity/Popularmovies-ver2/app/src/main/res/layout/activity_main.xml -->

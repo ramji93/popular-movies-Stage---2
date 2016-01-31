@@ -5,6 +5,7 @@ package udacity.popularmovies_ver2;
  */
 public class Movie {
 
+    int id;
     String poster;
     String title;
     String rating;
@@ -21,6 +22,14 @@ public class Movie {
 
     public String getTitle() {
         return title;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setTitle(String title) {
@@ -50,4 +59,5 @@ public class Movie {
     public void setDate(String date) {
         this.date = date;
     }
+
 }

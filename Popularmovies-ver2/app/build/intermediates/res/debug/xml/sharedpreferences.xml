@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<ListPreference
+    android:title="Sorting Order"
+    android:key="@string/sort_key"
+    android:entries="@array/sorting_options"
+    android:entryValues="@array/sorting_values"
+    android:dialogTitle="Sorting Order"
+    android:defaultValue="@string/popularity_value"
+    >
+</ListPreference>
+</PreferenceScreen><!-- From: file:/E:/androidstudioprojects/udacity/Popularmovies-ver2/app/src/main/res/xml/sharedpreferences.xml -->

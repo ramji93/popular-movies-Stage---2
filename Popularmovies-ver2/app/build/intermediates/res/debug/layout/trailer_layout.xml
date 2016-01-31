@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/buttonlayout"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Button xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:drawableLeft="@drawable/play2"
+        android:layout_height="wrap_content"
+        android:id="@+id/trailerbutton"
+        style="?android:attr/borderlessButtonStyle"
+        android:textSize="18sp" />
+
+    <View android:layout_height="5dp"
+        android:layout_width="match_parent"
+        android:background="#FFAB5152"
+        >
+
+    </View>
+
+
+</LinearLayout><!-- From: file:/E:/androidstudioprojects/udacity/Popularmovies-ver2/app/src/main/res/layout/trailer_layout.xml -->

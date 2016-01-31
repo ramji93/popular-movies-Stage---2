@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context="udacity.popularmovies_ver2.DescriptionActivity">
+        <item
+            android:id="@+id/menu_item_share"
+            app:showAsAction="always"
+            android:title="Share"
+            app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+            />
+    </menu>
+
+<!-- From: file:/E:/androidstudioprojects/udacity/Popularmovies-ver2/app/src/main/res/menu/menu_desc_fragment.xml -->
